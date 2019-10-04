@@ -14,20 +14,39 @@
 #
 # Note that the first line of the CSV is header that describes the fields--this
 # should not be loaded into a City object.
-cities = []
+import csv
 
-def cityreader(cities=[]):
+class City:
+  
+  def __init__(self, name, lat, lon):
+    self.name = name
+    self.lat = lat
+    self.lon = lon
+
+  def __str__(self):
+    return 'City('+self.name+', '+str(self.lat)+', '+str(self.lon)+')'
+
+
+cities=[]
+
   # TODO Implement the functionality to read from the 'cities.csv' file
   # For each city record, create a new City instance and add it to the 
   # `cities` list
-    
+
+def cityreader(cities=[]):
+
+  with open('cities.csv') as csvfile:
+    csvreader = csv.reader(csvfile)
+    next(csvreader)
+    for row in csvreader:
+      cities.append(City(str(row[0]), float(row[3]), float(row[4])))
     return cities
 
-cityreader(cities)
+cities = cityreader(cities)
 
 # Print the list of cities (name, lat, lon), 1 record per line.
-for c in cities:
-    print(c)
+#for c in cities:
+#    print(c.name, c.lat, c.lon)
 
 # STRETCH GOAL!
 #
@@ -59,13 +78,44 @@ for c in cities:
 # Salt Lake City: (40.7774,-111.9301)
 
 # TODO Get latitude and longitude values from the user
-
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # within will hold the cities that fall within the specified region
+  within_lat = []
   within = []
+
+  lat1 = float(lat1)
+  lat2 = float(lat2)
+
+  lon1 = float(lon1)
+  lon2 = float(lon2)
+
+  if lat1 > lat2:
+    lat_greater = lat1
+    lat_lessor = lat2
+  else:
+    lat_lessor = lat1
+    lat_greater = lat2
+
+  if lon1 > lon2:
+    lon_greater = lon1
+    lon_lessor = lon2
+  else:
+    lon_lessor = lon1
+    lon_greater = lon2
+
+  for i in cities:
+    if float(i.lat) < lat_greater and float(i.lat) > lat_lessor:
+      within_lat.append(i)
+
+  for i in within_lat:
+    if float(i.lon) < lon_greater and float(i.lon) > lon_lessor:
+      within.append(i)
+
+  print(len(within))
 
   # TODO Ensure that the lat and lon valuse are all floats
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
 
   return within
+
